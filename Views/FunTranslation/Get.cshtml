@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Translation.Models.FunTranslation>
+
+@{
+    ViewData["Title"] = "Fun Translation";
+}
+
+<h1>Fun Translation</h1>
+
+<p>
+    Please input the value want to translate:
+    @Html.TextBox("txtValue", null, new { placeholder = "Input value" })
+    <input type="button" value="Tranlate" id="btnStart" onclick="translateTheText()" />
+
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NormalText)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TranslatedText)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NormalText)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TranslatedText)
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger"
+                    onclick="deleteTranslatedDataWithId('@item.Id')">Delete</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+    function deleteTranslatedDataWithId(id) {
+        $.ajax({
+            url: "funtranslation/" + id,
+            data: JSON.stringify(id),
+            type: "DELETE",
+            contentType: "application/json;charset=utf-8",
+            //dataType: "json",
+            success: function () {
+                alert("Data is deleted.");
+            },
+            error: function () {
+                alert("An error occured!");
+            }
+        });
+    }
+
+    function translateTheText() {
+
+        var dataObject = JSON.stringify({
+            'NormalText': $('#txtValue').val(),
+            'TranslatedText': $('#txtValue').val(),
+        });
+
+        $.ajax({
+            url: "funtranslation/",
+            data: dataObject,
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            //dataType: "json",
+            success: function () {
+                alert("Data is added.");
+            },
+            error: function (data) {
+                console.log(data);
+                alert("Error!!! " + data.responseText);
+            }
+        });
+    }
+</script>
